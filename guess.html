@@ -1,0 +1,121 @@
+<!--
+
+Games works like this 
+
+
+I've just written this little exercice if you want to:
+
+
+This exercise consists in writing a “More or Less” game with AngularJS.
+Write the simplest possible HTML, do not add any CSS styling.
+
+Workflow:
+   The user is shown a button “Start the game”
+   When the users clicks on this button, a secret number is generated behind the scene and a form is shown
+   The form contains these elements:
+         A title (“What is the secret number?”)
+         A field: the player will enter his suggestions here
+         A submit button
+   When the form is submitted, don’t reload the page, but check the value given by the player:
+         if it’s greater than the secret number, display a “It’s less!” message
+         if it’s lesser than the secret number, display a “It’s more!” message
+         if it’s equal to the secret number, hide the form, display a “You win!” message and show a “Restart” button
+
+Bonus:
+If you have enough time, it could be great to add these features:
+   Display the total number of attempts at the end of the game
+   Above the “Start” and “Restart” buttons, show a form allowing the player to configure the game:
+         He will be able to set the range for the generated number
+         He will be able to set a maximum number of attempts
+
+
+-->
+<!DOCTYPE html>
+<html>
+	<head>
+	  <script data-require="angular.js@1.1.5" data-semver="1.1.5" src="http://code.angularjs.org/1.1.5/angular.min.js"></script>
+	</head>
+	<body>
+	  <div ng-app="game" ng-controller="Controller">
+		  <button ng-click="divShow=true;start();" ng-show="!divShow">Start the Game</button>
+		  <button ng-click="divShow=true;showNumber(divShow=false);" ng-show="divShow">Show the Guess Number</button>
+		  <div ng-show="!divShow">{{number}}</div>
+		  <div ng-show="divShow" ng-init="divShow=false">
+			<form name="frmGuessNum">
+				<table>
+					<tr>
+						<td>
+							<b>Guess an integer/a number between (0-100)</b>
+						</td>
+					</tr>
+				  <tr>
+					<td>
+						<input type="number" name="input" ng-model="guess.Num" placeholder="Guess the number">
+						<button ng-click="validate(guess.Num)" ng-disabled="frmGuessNum.$invalid;">Submit</button>
+					</td>
+					</tr>
+					<tr>
+						 <td ng-show="playAgain" ng-init="playAgain=false;">
+							 <b>{{result}}</b>
+							<button ng-click="divShow=true;start();">Restart the Game</button>
+						</td>
+					</tr>
+					<tr>
+						<td ng-show="userDataShow" ng-init="userDataShow = false">
+							Your attempts till now : ---> {{userData.length}}
+							<span ng-repeat="Data in userData track by $index">
+								<br />
+								{{Data}}
+							</span>
+						</td>
+					</tr>
+				</table>
+			</form>
+		  </div>
+	  </div>
+	  <script>
+			// Code goes here
+			angular.module("game",[]);
+			function Controller($scope) {
+				$scope.master = {};
+				$scope.userData =[];
+				$scope.start = function(){
+					$scope.random =  Math.floor(Math.random()*100+1);
+					$scope.playAgain = "false";
+					$scope.master = {};
+					$scope.userData =[];
+					$scope.userDataShow = "false";	
+				}
+				$scope.showNumber = function(){
+					$scope.number = angular.copy($scope.random);
+				};
+				$scope.validate = function(guessNum) {
+					if(guessNum > 0 || guessNum !== ""){
+						console.log(guessNum +"----"+ $scope.random);
+						if(guessNum == $scope.random){
+							$scope.result = "Your are awesome, you guessed it right number "+ guessNum +", Lets Play again!";
+							$scope.playAgain = "true";
+						}
+						else if(guessNum > $scope.random){
+							$scope.result = guessNum +"--- Your are guessing a little Higher";	
+						}
+						else if(guessNum < $scope.random){
+							$scope.result = guessNum +"--- Your are guessing a little Lower";
+						}else if(guessNum === null){
+							$scope.result = "Please do a valid guess!";
+						} else{
+							$scope.result = "";
+						}
+						if(typeof guessNum === "number" && $scope.playAgain !== "true"){
+							$scope.userDataShow = "true";
+							$scope.userData.push($scope.result);
+						}
+						console.log($scope.userData);
+					}
+					$scope.guess = angular.copy($scope.master);
+				};
+			}
+	  </script>
+	</body>
+
+</html>
