@@ -37,9 +37,8 @@ If you have enough time, it could be great to add these features:
 	</head>
 	<body>
 	  <div ng-app="game" ng-controller="Controller">
-		  <button ng-click="divShow=true;start();" ng-show="!divShow">Start the Game</button>
-		  <button ng-click="divShow=true;showNumber(divShow=false);" ng-show="divShow">Show the Guess Number</button>
-		  <div ng-show="!divShow">{{number}}</div>
+		  <button ng-click="start();" ng-show="divShow" ng-hide="divShow">Start the Game</button>
+		  <div ng-show="divShow" ng-hide="divShow">{{number}}</div>
 		  <div ng-show="divShow" ng-init="divShow=false">
 			<form name="frmGuessNum">
 				<table>
@@ -51,13 +50,13 @@ If you have enough time, it could be great to add these features:
 				  <tr>
 					<td>
 						<input type="number" name="input" ng-model="guess.Num" placeholder="Guess the number">
-						<button ng-click="validate(guess.Num)" ng-disabled="frmGuessNum.$invalid;">Submit</button>
+						<button ng-click="validate()" ng-disabled="frmGuessNum.$invalid;">Submit</button>
 					</td>
 					</tr>
 					<tr>
 						 <td ng-show="playAgain" ng-init="playAgain=false;">
 							 <b>{{result}}</b>
-							<button ng-click="divShow=true;start();">Restart the Game</button>
+							<button ng-click="start();">Restart the Game</button>
 						</td>
 					</tr>
 					<tr>
@@ -77,42 +76,46 @@ If you have enough time, it could be great to add these features:
 			// Code goes here
 			angular.module("game",[]);
 			function Controller($scope) {
-				$scope.master = {};
 				$scope.userData =[];
+				$scope.divShow = false;
+				$scope.userDataShow = false;	
+				//starting the game
 				$scope.start = function(){
 					$scope.random =  Math.floor(Math.random()*100+1);
-					$scope.playAgain = "false";
-					$scope.master = {};
+					$scope.playAgain = false;
+					$scope.divShow= true;
 					$scope.userData =[];
-					$scope.userDataShow = "false";	
+					$scope.userDataShow = false;	
 				}
+				
+				//showing the outpout of user unable to guess
 				$scope.showNumber = function(){
+					divShow= true;
 					$scope.number = angular.copy($scope.random);
 				};
-				$scope.validate = function(guessNum) {
-					if(guessNum > 0 || guessNum !== ""){
+				//validating the output
+				$scope.validate = function() {
+					guessNum = $scope.guess.Num;
+					if(typeof guessNum === "number" && guessNum > 0 && guessNum !== ""){
 						console.log(guessNum +"----"+ $scope.random);
 						if(guessNum == $scope.random){
 							$scope.result = "Your are awesome, you guessed it right number "+ guessNum +", Lets Play again!";
-							$scope.playAgain = "true";
+							$scope.playAgain = true;
 						}
 						else if(guessNum > $scope.random){
 							$scope.result = guessNum +"--- Your are guessing a little Higher";	
 						}
 						else if(guessNum < $scope.random){
 							$scope.result = guessNum +"--- Your are guessing a little Lower";
-						}else if(guessNum === null){
-							$scope.result = "Please do a valid guess!";
 						} else{
 							$scope.result = "";
 						}
-						if(typeof guessNum === "number" && $scope.playAgain !== "true"){
-							$scope.userDataShow = "true";
+						if(!$scope.playAgain){
+							$scope.userDataShow = true;
 							$scope.userData.push($scope.result);
 						}
-						console.log($scope.userData);
 					}
-					$scope.guess = angular.copy($scope.master);
+					$scope.guess = angular.copy();
 				};
 			}
 	  </script>
