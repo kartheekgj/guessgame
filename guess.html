@@ -37,88 +37,84 @@ If you have enough time, it could be great to add these features:
 	</head>
 	<body>
 	  <div ng-app="game" ng-controller="Controller">
-		  <button ng-click="start();" ng-show="divShow" ng-hide="divShow">Start the Game</button>
-		  <div ng-show="divShow" ng-hide="divShow">{{number}}</div>
-		  <div ng-show="divShow" ng-init="divShow=false">
-			<form name="frmGuessNum">
-				<table>
-					<tr>
-						<td>
-							<b>Guess an integer/a number between (0-100)</b>
-						</td>
-					</tr>
-				  <tr>
-					<td>
-						<input type="number" name="input" ng-model="guess.Num" placeholder="Guess the number">
-						<button ng-click="validate()" ng-disabled="frmGuessNum.$invalid;">Submit</button>
-					</td>
-					</tr>
-					<tr>
-						 <td ng-show="playAgain" ng-init="playAgain=false;">
-							 <b>{{result}}</b>
-							<button ng-click="start();">Restart the Game</button>
-						</td>
-					</tr>
-					<tr>
-						<td ng-show="userDataShow" ng-init="userDataShow = false">
-							Your attempts till now : ---> {{userData.length}}
-							<span ng-repeat="Data in userData track by $index">
-								<br />
-								{{Data}}
-							</span>
-						</td>
-					</tr>
-				</table>
-			</form>
-		  </div>
+		 <div>
+			{{heading}}
+		 </div>
+		 <div id="input">
+			<input type="text" ng-model="inputVal">
+			<input type="submit" ng-click="game.submit()">
+			<br />
+			<label ng-bind-html-unsafe="message">{{message}}</label>
+			<br />
+			<label ng-bind-html-unsafe="restart">{{restart}}</label>
+		 </div>
+		 
 	  </div>
 	  <script>
-			// Code goes here
-			angular.module("game",[]);
-			function Controller($scope) {
-				$scope.userData =[];
-				$scope.divShow = false;
-				$scope.userDataShow = false;	
-				//starting the game
-				$scope.start = function(){
-					$scope.random =  Math.floor(Math.random()*100+1);
-					$scope.playAgain = false;
-					$scope.divShow= true;
-					$scope.userData =[];
-					$scope.userDataShow = false;	
-				}
+		var app = angular.module('game',[]);
+		app.controller('Controller',function($scope){
+			$scope.heading = "Guessing the game";
+			$scope.inputVal = '';
+			
+			
+			
+			var a = 10;
+			$scope.game = 
+			{
+				random_number : Math.floor(Math.random()*100+1),
 				
-				//showing the outpout of user unable to guess
-				$scope.showNumber = function(){
-					divShow= true;
-					$scope.number = angular.copy($scope.random);
-				};
-				//validating the output
-				$scope.validate = function() {
-					guessNum = $scope.guess.Num;
-					if(typeof guessNum === "number" && guessNum > 0 && guessNum !== ""){
-						console.log(guessNum +"----"+ $scope.random);
-						if(guessNum == $scope.random){
-							$scope.result = "Your are awesome, you guessed it right number "+ guessNum +", Lets Play again!";
-							$scope.playAgain = true;
-						}
-						else if(guessNum > $scope.random){
-							$scope.result = guessNum +"--- Your are guessing a little Higher";	
-						}
-						else if(guessNum < $scope.random){
-							$scope.result = guessNum +"--- Your are guessing a little Lower";
-						} else{
-							$scope.result = "";
-						}
-						if(!$scope.playAgain){
-							$scope.userDataShow = true;
-							$scope.userData.push($scope.result);
-						}
+				submit : function()
+				{
+					if(isNaN(parseInt($scope.inputVal,10)))
+					{
+						$scope.message = 'Aww only numbers please.....';
+						$scope.inputVal = '';
+						return false;
 					}
-					$scope.guess = angular.copy();
-				};
-			}
+					else
+					{
+						var message = $scope.game._validate(parseInt($scope.inputVal,10));
+						console.log($scope.game.random_number);
+						$scope.restart	= '';
+						if( ! message.guess)
+							$scope.message = 'You are almost there try a little <strong>'+ message.message +'</strong>';
+						else
+						{
+							$scope.message = 'Awesome!!! you have done it.';
+							$scope.restart = "<a href='/' > restart</a>";
+						}
+							
+						return true;	
+					}
+					
+				},
+				_validate : function(value)
+				{
+					var guess	=	false,
+						message = '';	
+						
+					if(value === $scope.game.random_number)
+					{
+						guess	=	true,
+						message = 'Done it';		
+					}
+					else if(value > $scope.game.random_number)
+					{
+						message = 'lower';
+					}	
+					else if(value < $scope.game.random_number)
+					{
+						message = 'higher';
+					}
+					return {guess:guess, message:message}
+				}
+			} 
+		});
+		
+		
+		
+		
+	  
 	  </script>
 	</body>
-
 </html>
