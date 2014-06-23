@@ -45,8 +45,6 @@ If you have enough time, it could be great to add these features:
 			<input type="submit" ng-click="game.submit()">
 			<br />
 			<label ng-bind-html-unsafe="message">{{message}}</label>
-			<br />
-			<label ng-bind-html-unsafe="restart">{{restart}}</label>
 		 </div>
 		 
 	  </div>
@@ -55,10 +53,6 @@ If you have enough time, it could be great to add these features:
 		app.controller('Controller',function($scope){
 			$scope.heading = "Guessing the game";
 			$scope.inputVal = '';
-			
-			
-			
-			var a = 10;
 			$scope.game = 
 			{
 				random_number : Math.floor(Math.random()*100+1),
@@ -81,7 +75,6 @@ If you have enough time, it could be great to add these features:
 						else
 						{
 							$scope.message = 'Awesome!!! you have done it.';
-							$scope.restart = "<a href='/' > restart</a>";
 						}
 							
 						return true;	
