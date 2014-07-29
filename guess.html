@@ -44,6 +44,8 @@ If you have enough time, it could be great to add these features:
 			<input type="text" ng-model="inputVal">
 			<input type="submit" ng-click="game.submit()">
 			<br />
+			<label ng-bind-html-unsafe="chances"> {{trails}}</label>
+			<br/>
 			<label ng-bind-html-unsafe="message">{{message}}</label>
 		 </div>
 		 
@@ -53,6 +55,7 @@ If you have enough time, it could be great to add these features:
 		app.controller('Controller',function($scope){
 			$scope.heading = "Guessing the game";
 			$scope.inputVal = '';
+			$scope.trails = 0;
 			$scope.game = 
 			{
 				random_number : Math.floor(Math.random()*100+1),
@@ -71,10 +74,15 @@ If you have enough time, it could be great to add these features:
 						console.log($scope.game.random_number);
 						$scope.restart	= '';
 						if( ! message.guess)
+						{
+							$scope.chances = "Number of Chances: "+ parseInt(++$scope.trails,10);
 							$scope.message = 'You are almost there try a little <strong>'+ message.message +'</strong>';
+						}
+						
 						else
 						{
-							$scope.message = 'Awesome!!! you have done it.';
+							$scope.chances = "";
+							$scope.message = 'Awesome!!! you have done it in <strong>' +parseInt(++$scope.trails,10)+'</strong> chances.';
 						}
 							
 						return true;	
@@ -103,11 +111,6 @@ If you have enough time, it could be great to add these features:
 				}
 			} 
 		});
-		
-		
-		
-		
-	  
 	  </script>
 	</body>
 </html>
