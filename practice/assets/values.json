@@ -1,0 +1,19 @@
+{
+	"values": [
+			{
+				"name" : "testing app1",
+				"address" : "tirupathi-1",
+				"pincode" : 517501
+			},
+			{
+				"name" : "testing app2",
+				"address" : "tirupathi-2",
+				"pincode" : 517502
+			},
+			{
+				"name" : "testing app3",
+				"address" : "tirupathi-3",
+				"pincode" : 517503
+			}
+	]
+}
