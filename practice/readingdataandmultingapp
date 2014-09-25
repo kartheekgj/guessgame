@@ -1,0 +1,59 @@
+<!doctype html>
+  <html>
+  <head><title>Testing Angular App</title></head>
+   <link rel="stylesheet" type="text/css" href="./assets/css/bootstrap.min.css">
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <h3>Angular Test App</h3>
+    <hr>
+    <h3>Using factory and controller</h3>
+    <div ng-app="testing" ng-controller="myCntrl">
+      <ol  ng-repeat="item in items">
+       <li> {{item.name}}</li>
+       <li> {{item.address}}</li>
+       <li> {{item.pincode}}</li>
+      </ol>
+    </div>
+
+    <hr/>
+    <h3>Using only controller</h3>
+    <div id="testing2" ng-app="testing2" ng-controller="myCntrl2">
+      <ol  ng-repeat="item in items">
+       <li> {{item.name}}</li>
+       <li> {{item.address}}</li>
+       <li> {{item.pincode}}</li>
+      </ol>
+    </div>
+  <script type="text/javascript" src="./assets/angularjs.js"></script>
+  <script>
+  angular
+      .module('testing',[])
+        .factory('myData',function($http){
+            return {
+              read: function(){
+                 return $http.get("./assets/values.json").then(function(response){
+                    return response.data.values; 
+                  });
+              }
+            }
+        })
+        .controller('myCntrl',function($scope,myData){
+          myData.read().then(function(res){
+            $scope.items = res;
+            console.log($scope.items);
+          });
+        });   
+
+      angular
+        .module('testing2',[])
+          .controller('myCntrl2',function($scope,$http){
+            $http.get("./assets/values.json").then(function(res){
+              $scope.items = res.data.values;
+                console.log($scope.items);
+            });
+          });
+          angular.
+            bootstrap(document.getElementById("testing2"), ['testing2']);    
+  </script>
+  </body>
+</html>
