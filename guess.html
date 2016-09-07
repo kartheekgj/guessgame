@@ -32,36 +32,73 @@ If you have enough time, it could be great to add these features:
 -->
 <!DOCTYPE html>
 <html>
-	<head>
-	  <script data-require="angular.js@1.1.5" data-semver="1.1.5" src="http://code.angularjs.org/1.1.5/angular.min.js"></script>
-	</head>
-	<body>
-	  <div ng-app="game" ng-controller="Controller">
-		 <div>
-			{{heading}}
-		 </div>
-		 <div id="input">
-			<input type="text" ng-model="inputVal">
-			<input type="submit" ng-click="game.submit()">
-			<br />
-			<label ng-bind-html-unsafe="chances"> {{trails}}</label>
-			<br/>
-			<label ng-bind-html-unsafe="message">{{message}}</label>
-		 </div>
-		 
+
+<head>
+    <meta name="description" content="Guess the secret number" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+
+</head>
+
+<body>
+    <header>
+
+        <nav>
+            <div style="margin-top:5%;margin-left:3%;">This is a simple game where you need to guess number between 1-100
+            </div>
+        </nav>
+    </header>
+
+    <div ng-app="game" style="margin-top:3%;margin-left:5%;" ng-controller="Controller">
+
+        <div id="input">
+            <form class="pure-form">
+                <div class="pure-u-1 pure-u-md-1-6">
+                    <input id="city" class="pure-u-23-24" maxlength="3" style="width:200px" type="number" ng-model="inputVal" placeholder="Guess the number" required>
+                    <button type="submit" ng-hide="guess" class="pure-button pure-button-primary" ng-click="game.submit()">Submit</button>
+                    <button type="submit" ng-show="guess" class="pure-button pure-button-primary" ng-click="game.init()">Reset</button>
+
+                </div>
+
+            </form>
+            <br /><br /><br />
+            <label ng-bind-html-unsafe="message">{{message}}</label>
+        </div>
+        <br />
+        <br />
+        <br />
+        <br />
+        <div class="pure-menu custom-restricted-width">
+
+            <span class="pure-menu-heading">How does this work</span>
+            <ul class="pure-menu-list">
+                <li class="pure-menu-item"><a href="#" class="pure-menu-link">if it’s greater than the secret number, display a “It’s less!” message</a></li>
+                <li class="pure-menu-item"><a href="#" class="pure-menu-link">if it’s lesser than the secret number, display a “It’s more!” message</a></li>
+                <li class="pure-menu-item"><a href="#" class="pure-menu-link"> if it’s equal to the secret number, hide the form, display a “You win!” message and show a “Restart” button bin description</li>
+        
+    </ul>
+  </div>
 	  </div>
-	  <script>
-		var app = angular.module('game',[]);
+       
+    
+   
+     <script data-require="angular.js@1.1.5" data-semver="1.1.5" src="http://code.angularjs.org/1.1.5/angular.min.js"></script>
+
+	 </body>
+	 <script>
+	 var app = angular.module('game',[]);
 		app.controller('Controller',function($scope){
-			$scope.heading = "Guessing the game";
+			$scope.heading = "Guess the number(1-100)";
 			$scope.inputVal = '';
-			$scope.trails = 0;
+          $scope.guess = false;
 			$scope.game = 
 			{
 				random_number : Math.floor(Math.random()*100+1),
 				
 				submit : function()
 				{
+                    $scope.message = '';
 					if(isNaN(parseInt($scope.inputVal,10)))
 					{
 						$scope.message = 'Aww only numbers please.....';
@@ -74,15 +111,11 @@ If you have enough time, it could be great to add these features:
 						console.log($scope.game.random_number);
 						$scope.restart	= '';
 						if( ! message.guess)
-						{
-							$scope.chances = "Number of Chances: "+ parseInt(++$scope.trails,10);
-							$scope.message = 'You are almost there try a little <strong>'+ message.message +'</strong>';
-						}
-						
+							$scope.message = 'You are almost there try a little '+ message.message;
 						else
 						{
-							$scope.chances = "";
-							$scope.message = 'Awesome!!! you have done it in <strong>' +parseInt(++$scope.trails,10)+'</strong> chances.';
+                            $scope.guess = message.guess;
+							$scope.message = 'Awesome!!! <b>"'+ $scope.game.random_number +'"</b> is correct answer <i class="fa fa-check" aria-hidden="true"></i>';
 						}
 							
 						return true;	
@@ -97,20 +130,27 @@ If you have enough time, it could be great to add these features:
 					if(value === $scope.game.random_number)
 					{
 						guess	=	true,
-						message = 'Done it';		
+						message = 'Done it';
 					}
 					else if(value > $scope.game.random_number)
 					{
-						message = 'lower';
+						message = '<b>lower</b>';
 					}	
 					else if(value < $scope.game.random_number)
 					{
-						message = 'higher';
+						message = '<b>higher</b>';
 					}
 					return {guess:guess, message:message}
-				}
+				},
+                init : function(){
+                  $scope.game.random_number = Math.floor(Math.random()*100+1);
+                  $scope.message = '';
+                  $scope.inputVal = '';
+                  $scope.guess = false;
+                } 
 			} 
 		});
-	  </script>
-	</body>
+			
+	 	
+	 </script>
 </html>
